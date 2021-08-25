@@ -11,6 +11,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	"strconv"
+
 	"github.com/elastic/go-sysinfo"
 	"github.com/google/uuid"
 	"github.com/hashicorp/go-multierror"
@@ -488,6 +490,10 @@ func (l *LocalWorker) Info(context.Context) (storiface.WorkerInfo, error) {
 		panic(err)
 	}
 
+	if os.Getenv("WORKER_NAME") != "" {
+		hostname = os.Getenv("WORKER_NAME")
+	}
+
 	gpus, err := ffi.GetGPUDevices()
 	if err != nil {
 		log.Errorf("getting gpu devices failed: %+v", err)
@@ -502,21 +508,40 @@ func (l *LocalWorker) Info(context.Context) (storiface.WorkerInfo, error) {
 	if err != nil {
 		return storiface.WorkerInfo{}, xerrors.Errorf("getting memory info: %w", err)
 	}
+	log.Infof("Memory %+v", mem.Total)
 
 	memSwap := mem.VirtualTotal
 	if l.noSwap {
 		memSwap = 0
 	}
 
+	mem_limit, err := strconv.ParseUint(os.Getenv("MEMORY_LIMIT"), 10, 64)
+	if err != nil {
+		log.Warnf("GET Custom Memory Limit Error: %w", err)
+		mem_limit = mem.Total
+	} else {
+		mem_limit = mem_limit * 1024 * 1024 * 1024
+	}
+
+	cpu_limit, err := strconv.ParseUint(os.Getenv("CPU_LIMIT"), 10, 64)
+	if err != nil {
+		log.Warnf("Get Custom CPU Limit Error: %w", err)
+		cpu_limit = uint64(runtime.NumCPU())
+	}
+
 	return storiface.WorkerInfo{
 		Hostname:        hostname,
 		IgnoreResources: l.ignoreResources,
 		Resources: storiface.WorkerResources{
-			MemPhysical: mem.Total,
+			// Update This Code
+			// MemPhysical: mem.Total,
+			MemPhysical: mem_limit,
 			MemSwap:     memSwap,
-			MemReserved: mem.VirtualUsed + mem.Total - mem.Available, // TODO: sub this process
-			CPUs:        uint64(runtime.NumCPU()),
-			GPUs:        gpus,
+			// MemReserved: mem.VirtualUsed + mem.Total - mem.Available, // TODO: sub this process
+			MemReserved: mem.VirtualUsed + mem_limit - mem.Available, // TODO: sub this process
+			// CPUs:        uint64(runtime.NumCPU()),
+			CPUs: cpu_limit,
+			GPUs: gpus,
 		},
 	}, nil
 }

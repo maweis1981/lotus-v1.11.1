@@ -113,6 +113,20 @@ var runCmd = &cli.Command{
 			Name:   "address",
 			Hidden: true,
 		},
+		// add by whalefarm maven
+		&cli.StringFlag{
+			Name:   "worker-name",
+			Hidden: true,
+		},
+		&cli.StringFlag{
+			Name:   "memory-limit",
+			Hidden: true,
+		},
+		&cli.StringFlag{
+			Name:   "cpu-limit",
+			Hidden: true,
+		},
+		// end by whalefarm
 		&cli.BoolFlag{
 			Name:  "no-local-storage",
 			Usage: "don't use storageminer repo for sector storage",
@@ -170,6 +184,16 @@ var runCmd = &cli.Command{
 	},
 	Action: func(cctx *cli.Context) error {
 		log.Info("Starting lotus worker")
+
+		if cctx.String("worker-name") != "" {
+			os.Setenv("WORKER_NAME", cctx.String("worker-name"))
+		}
+		if cctx.String("memory-limit") != "" {
+			os.Setenv("MEMORY_LIMIT", cctx.String("memory-limit"))
+		}
+		if cctx.String("cpu-limit") != "" {
+			os.Setenv("CPU_LIMIT", cctx.String("cpu-limit"))
+		}
 
 		if !cctx.Bool("enable-gpu-proving") {
 			if err := os.Setenv("BELLMAN_NO_GPU", "true"); err != nil {
