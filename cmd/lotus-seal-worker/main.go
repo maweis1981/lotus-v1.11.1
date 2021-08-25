@@ -115,16 +115,17 @@ var runCmd = &cli.Command{
 		},
 		// add by whalefarm maven
 		&cli.StringFlag{
-			Name:   "worker-name",
-			Hidden: true,
+			Name:  "worker-name",
+			Usage: "worker name, such as Tasks[P1,P2,C2]-YourWorkerIP",
 		},
 		&cli.StringFlag{
-			Name:   "memory-limit",
-			Hidden: true,
+			Name:  "memory-limit",
+			Usage: "memory limit for worker, default 900 means 900 GiB For 12 * P1 32GiB Sectors ",
+			Value: "900",
 		},
 		&cli.StringFlag{
-			Name:   "cpu-limit",
-			Hidden: true,
+			Name:  "cpu-limit",
+			Usage: "cpu limit means tasks limit, because cpu will use sdr and L3 for multi cores in fact, you can define 13 in P1",
 		},
 		// end by whalefarm
 		&cli.BoolFlag{
