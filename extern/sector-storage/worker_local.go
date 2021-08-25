@@ -537,8 +537,8 @@ func (l *LocalWorker) Info(context.Context) (storiface.WorkerInfo, error) {
 			// MemPhysical: mem.Total,
 			MemPhysical: mem_limit,
 			MemSwap:     memSwap,
-			// MemReserved: mem.VirtualUsed + mem.Total - mem.Available, // TODO: sub this process
-			MemReserved: mem.VirtualUsed + mem_limit - mem.Available, // TODO: sub this process
+			MemReserved: mem.VirtualUsed + mem.Total - mem.Available, // TODO: sub this process
+			// MemReserved: mem.VirtualUsed + mem_limit - mem.Available, // TODO: sub this process
 			// CPUs:        uint64(runtime.NumCPU()),
 			CPUs: cpu_limit,
 			GPUs: gpus,
