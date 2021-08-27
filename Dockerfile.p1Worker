@@ -80,7 +80,7 @@ ENV RUSTFLAGS "-C target-cpu=native -g"
 RUN mkdir -p /data/sealing_space /data/worker /data/tmp /data/proofs_param/v28 /data/proofs_parent/v28 && chown fil /data/worker /data/tmp /data/proofs_param/v28 /data/proofs_parent/v28
 
 RUN echo '#!/bin/bash \n\
-	/usr/local/bin/lotus-worker run --listen=${WORKER_HOST}:${WORKER_PORT} --worker-name=${WORKER_NAME}-p1 --memory-limit=${MEMORY_LIMIT}} --cpu-limit=${CPU_LIMIT}} --precommit2=false --commit=false --no-local-storage=true --no-swap=true' > /entrypoint.sh
+	/usr/local/bin/lotus-worker run --listen=${WORKER_HOST}:${WORKER_PORT} --worker-name=${WORKER_NAME}-p1 --memory-limit=${MEMORY_LIMIT} --cpu-limit=${CPU_LIMIT} --precommit2=false --commit=false --no-local-storage=true --no-swap=true' > /entrypoint.sh
 
 RUN cat /entrypoint.sh
 RUN chmod +x /entrypoint.sh
