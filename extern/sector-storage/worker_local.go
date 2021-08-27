@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -525,7 +526,7 @@ func (l *LocalWorker) Info(context.Context) (storiface.WorkerInfo, error) {
 	cpu_limit, err := strconv.ParseUint(os.Getenv("CPU_LIMIT"), 10, 64)
 	if err != nil {
 		log.Warnf("Get Custom CPU Limit Error: %w", err)
-		cpu_limit = uint64(13) // default value for 13 threads
+		cpu_limit = uint64(runtime.NumCPU())
 	}
 
 	return storiface.WorkerInfo{
