@@ -77,7 +77,8 @@ ENV FIL_PROOFS_MULTICORE_SDR_PRODUCERS 3
 ENV MINER_API_INFO ABCDEFG
 ENV RUSTFLAGS "-C target-cpu=native -g"
 
-RUN mkdir -p /fcfs /data/sealing_space /data/worker /data/tmp /data/proofs_param/v28 /data/proofs_parent/v28 && chown fil /data/worker /data/tmp /data/proofs_param/v28 /data/proofs_parent/v28
+RUN mkdir -p /data/sealing_space /data/fcfs /data/worker /data/tmp /data/proofs_param/v28 /data/proofs_parent/v28 
+# && chown fil /data/worker /data/tmp /data/proofs_param/v28 /data/proofs_parent/v28
 
 RUN echo '#!/bin/bash \n\
 	/usr/local/bin/lotus-worker run --listen=${WORKER_HOST}:${WORKER_PORT} --worker-name=${WORKER_NAME}-p1 --memory-limit=${MEMORY_LIMIT} --cpu-limit=${CPU_LIMIT} --precommit2=false --commit=false --no-local-storage=true --no-swap=true' > /entrypoint.sh
@@ -85,7 +86,7 @@ RUN echo '#!/bin/bash \n\
 RUN cat /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-USER fil
+# USER fil
 
 ENTRYPOINT ["/entrypoint.sh"]
 
